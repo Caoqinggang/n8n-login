@@ -35,5 +35,4 @@ jobs:
           name: n8n-screenshots
           path: |
             login-success.png
-            trial-account.png
             error.png
