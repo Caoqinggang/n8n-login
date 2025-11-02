@@ -1,38 +1,43 @@
-name: N8N Auto Login
+name: Auto N8N Login Every 7 Days
 
 on:
   schedule:
-    - cron: "0 0 */10 * *"   # 每10天运行一次（UTC 0点）
-  workflow_dispatch:
+    # 每 7 天执行一次（UTC 时间 00:00）
+    - cron: "0 0 */7 * *"
+  workflow_dispatch:  # 支持手动触发执行
 
 jobs:
-  login:
+  run-login:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      - name: 🧭 Checkout repository
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
+      - name: ⚙️ Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: 20
 
-      - name: Install dependencies
-        run: npm install playwright axios form-data
+      - name: 📦 Install dependencies
+        run: npm install
 
-      - name: Run login script
-        run: node scripts/login.js
+      - name: 🌐 Install Playwright Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: 🔐 Set environment variables
         env:
-          SAP_EMAIL: ${{ secrets.EMAIL }}
-          SAP_PASSWORD: ${{ secrets.PASSWORD }}
+          EMAIL: ${{ secrets.EMAIL }}
+          PASSWORD: ${{ secrets.PASSWORD }}
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: |
+          echo "Environment variables loaded"
 
-      - name: Upload screenshots as artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: n8n-screenshots
-          path: |
-            login-success.png
-            error.png
+      - name: 🚀 Run auto-login script
+        env:
+          EMAIL: ${{ secrets.EMAIL }}
+          PASSWORD: ${{ secrets.PASSWORD }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: node auto-login.js
