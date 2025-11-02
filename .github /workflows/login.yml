@@ -24,15 +24,15 @@ jobs:
       - name: Run login script
         run: node scripts/login.js
         env:
-          SAP_EMAIL: ${{ secrets.SAP_EMAIL }}
-          SAP_PASSWORD: ${{ secrets.SAP_PASSWORD }}
+          SAP_EMAIL: ${{ secrets.EMAIL }}
+          SAP_PASSWORD: ${{ secrets.PASSWORD }}
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
 
       - name: Upload screenshots as artifact
         uses: actions/upload-artifact@v4
         with:
-          name: sap-btp-screenshots
+          name: n8n-screenshots
           path: |
             login-success.png
             trial-account.png
