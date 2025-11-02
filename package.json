@@ -1,0 +1,13 @@
+{
+  "name": "n8n-login",
+  "version": "1.0.0",
+  "main": "auto-login.js",
+  "scripts": {
+    "start": "node auto-login.js"
+  },
+  "dependencies": {
+    "playwright": "^1.48.0",
+    "axios": "^1.7.0",
+    "form-data": "^4.0.0"
+  }
+}
