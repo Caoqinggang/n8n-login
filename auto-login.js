@@ -30,7 +30,7 @@ async function sendToTelegram(filePath, caption) {
     const page = await browser.newPage();
 
     console.log("🌐 打开登录页面...");
-    await page.goto("https://lycc17-n8n-free.hf.space/", { waitUntil: "networkidle" });
+    await page.goto("https://lycc17-n8n-free.hf.space/", { waitUntil: "networkidle" }); // 登录地址需根据实际修改
 
     console.log("✉️ 输入邮箱...");
     await page.waitForSelector(SELECTORS.emailInput, { timeout: 15000 });
