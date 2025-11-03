@@ -17,10 +17,14 @@ async function sendToTelegram(filePath, caption) {
 }
 
 (async () => {
+  // ✅ n8n 登录页选择器
   const SELECTORS = {
-    emailInput: 'input[name="email"], input[id="j_username"]',
-    passwordInput: 'input[type="password"], input[id="j_password"]',
-    passwordSubmit: 'button[type="submit"], #logOnFormSubmit',
+    emailInput:
+      'input[name="email"], input#email, .el-input__inner[type="text"]',
+    passwordInput:
+      'input[name="password"], input#password, .el-input__inner[type="password"]',
+    passwordSubmit:
+      'button[type="submit"], button:has-text("Sign in"), button.el-button--primary',
   };
 
   let browser;
@@ -29,8 +33,10 @@ async function sendToTelegram(filePath, caption) {
     const page = await browser.newPage();
 
     console.log("🌐 打开登录页面...");
-    await page.goto("https://lycc17-n8n-free.hf.space/", { waitUntil: "networkidle" });
-    await page.waitForTimeout(5000);
+    await page.goto("https://lycc17-n8n-free.hf.space/", {
+      waitUntil: "networkidle",
+    });
+    await page.waitForTimeout(10000);
 
     console.log("✉️ 输入邮箱...");
     await page.fill(SELECTORS.emailInput, process.env.EMAIL);
@@ -41,7 +47,8 @@ async function sendToTelegram(filePath, caption) {
     console.log("➡️ 提交登录...");
     await page.click(SELECTORS.passwordSubmit);
 
-    await page.waitForTimeout(8000);
+    // 等待登录跳转
+    await page.waitForTimeout(10000);
 
     const screenshotPath = "login-success.png";
     await page.screenshot({ path: screenshotPath, fullPage: true });
