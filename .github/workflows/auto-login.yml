@@ -1,28 +1,33 @@
-name: 🧠 Auto Login to N8N
+name: Auto N8N Login Every 7 Days
 
 on:
   schedule:
-    - cron: "0 0 */7 * *"  # 每7天执行一次
-  workflow_dispatch:       # 手动触发
+    # 每7天运行一次（UTC时间 00:00）
+    - cron: "0 0 */7 * *"
+  workflow_dispatch:  # 允许手动触发
+
 jobs:
-  run-login:
+  auto-login:
     runs-on: ubuntu-latest
+
     steps:
-      - name: 🛎️ Checkout code
+      - name: 📥 Checkout repository
         uses: actions/checkout@v4
 
       - name: ⚙️ Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: 20
 
       - name: 📦 Install dependencies
-        run: npm install
+        run: |
+          npm init -y
+          npm install playwright axios form-data
 
-      - name: 🧩 Install Playwright Chromium
+      - name: 🧠 Install Playwright Chromium
         run: npx playwright install --with-deps chromium
 
-      - name: 🚀 Run auto-login script
+      - name: ▶️ Run auto-login script
         env:
           EMAIL: ${{ secrets.EMAIL }}
           PASSWORD: ${{ secrets.PASSWORD }}
