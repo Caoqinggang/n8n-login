@@ -27,9 +27,6 @@
 ```
 
 ---
-## 登录地址
-
-根据部署的n8n登录地址自行修改
 
 ## 配置环境变量
 
@@ -83,6 +80,7 @@ Workflow `.github/workflows/auto-login.yml` 会自动每 7 天运行一次，也
 
 ## 注意事项
 
+- n8n 登录页面路径需要根据实际自行修改。
 - n8n 登录页面路径可能因版本或部署方式不同，请确认 `auto-login.js` 中 `page.goto()` 的 URL 是否正确。
 - Playwright 运行时可增加 `headless: false` 进行调试，方便确认选择器。
 - 如果 Telegram 消息发送失败，可在 GitHub Actions Artifact 中下载截图。
