@@ -11,48 +11,45 @@ async function sendToTelegram(filePath, caption) {
   formData.append("caption", caption);
   formData.append("photo", fs.createReadStream(filePath));
 
-  await axios.post(telegramApi, formData, {
-    headers: formData.getHeaders(),
-  });
+  await axios.post(telegramApi, formData, { headers: formData.getHeaders() });
 }
 
 (async () => {
-  // ✅ n8n 登录页选择器
   const SELECTORS = {
-    emailInput:
-      'input[name="email"], input#email, .el-input__inner[type="text"]',
-    passwordInput:
-      'input[name="password"], input#password, .el-input__inner[type="password"]',
-    passwordSubmit:
-      'button[type="submit"], button:has-text("Sign in"), button.el-button--primary',
+    emailInput: 'input[placeholder="Email"], input[type="email"]',
+    passwordInput: 'input[placeholder="Password"], input[type="password"]',
+    passwordSubmit: 'button[type="submit"], button:has-text("Sign in")',
   };
 
   let browser;
   try {
-    browser = await chromium.launch({ headless: true });
+    browser = await chromium.launch({
+      headless: true,  // 无界面运行
+      args: ["--no-sandbox", "--disable-setuid-sandbox"],
+    });
     const page = await browser.newPage();
 
     console.log("🌐 打开登录页面...");
-    await page.goto("https://lycc17-n8n-free.hf.space/", {
-      waitUntil: "networkidle",
-    });
-    await page.waitForTimeout(10000);
+    await page.goto("https://lycc17-n8n-free.hf.space/", { waitUntil: "networkidle" });
 
     console.log("✉️ 输入邮箱...");
+    await page.waitForSelector(SELECTORS.emailInput, { timeout: 15000 });
     await page.fill(SELECTORS.emailInput, process.env.EMAIL);
 
     console.log("🔑 输入密码...");
     await page.fill(SELECTORS.passwordInput, process.env.PASSWORD);
 
-    console.log("➡️ 提交登录...");
+    console.log("➡️ 点击登录...");
     await page.click(SELECTORS.passwordSubmit);
 
-    // 等待登录跳转
-    await page.waitForTimeout(10000);
+    // 等待跳转
+    await page.waitForLoadState("networkidle");
+    await page.waitForTimeout(5000);
 
+    // 检查是否登录成功
     const screenshotPath = "login-success.png";
     await page.screenshot({ path: screenshotPath, fullPage: true });
-    await sendToTelegram(screenshotPath, "✅ N8N 登录成功截图");
+    await sendToTelegram(screenshotPath, "✅ n8n 登录成功截图");
 
     console.log("🎉 登录成功截图已发送到 Telegram！");
   } catch (err) {
