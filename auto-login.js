@@ -44,7 +44,7 @@ async function sendToTelegram(filePath, caption) {
 
     // 等待跳转
     await page.waitForLoadState("networkidle");
-    await page.waitForTimeout(5000);
+    await page.waitForTimeout(10000);
 
     // 检查是否登录成功
     const screenshotPath = "login-success.png";
